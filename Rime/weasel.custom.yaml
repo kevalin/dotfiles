@@ -1,0 +1,27 @@
+customization:
+  distribution_code_name: Weasel
+  distribution_version: 0.14.3
+  generator: "Weasel::UIStyleSettings"
+  modified_time: "Thu Apr  6 12:48:37 2023"
+  rime_version: 1.5.3
+
+patch:
+  style:
+    layout:
+      min_height: 0
+      border_width: 0
+      margin_x: 4
+      margin_y: 4
+      spacing: 10
+      candidate_spacing: 10
+      hilite_spacing: 0
+      hilite_padding: 4
+      round_corner: 0
+      hilited_corner_radius: 5
+      corner_radius: 0
+    color_scheme: aqua
+    font_point: 13
+    font_face: "霞鹜新晰黑 屏幕阅读版"
+    # label_font_face: "JetBrainsMono NF"
+    horizontal: true
+    inline_preedit: true
