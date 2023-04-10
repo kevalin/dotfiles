@@ -52,7 +52,20 @@ function M.setup()
     use 'williamboman/mason.nvim'
     use 'williamboman/mason-lspconfig.nvim'
 
-    use 'glepnir/lspsaga.nvim' -- LSP UIs
+    -- LSP UIs
+    use {
+      'glepnir/lspsaga.nvim',
+      opt = true,
+      branch = "main",
+      event = "LspAttach",
+      config = function()
+        require("lspsaga").setup({})
+      end,
+      requires = {
+        { "nvim-tree/nvim-web-devicons" },
+        { "nvim-treesitter/nvim-treesitter" }
+      }
+    }
     use 'L3MON4D3/LuaSnip'
     use {
       'nvim-treesitter/nvim-treesitter',
