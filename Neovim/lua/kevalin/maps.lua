@@ -49,7 +49,14 @@ map('v', '<A-h>', ":MoveHBlock(-1)<CR>", opts)
 map('n', '<leader>bd', "<cmd>lua require('bufdelete').bufdelete(0, true)<CR>", opts)
 
 -- open or close nvim-tree
-map('n', '<A-e>', ":NvimTreeToggle<CR>", opts)
+map('n', '<leader>n', ":NvimTreeToggle<CR>", opts)
 
 -- open neogit
 map('n', '<A-g>', ":Neogit<CR>", opts)
+
+-- tomato
+map('n', '<C-t>', "<cmd>lua require('tomato').start_round()<CR>", opts)
+map('n', '<C-r>', "<cmd>lua require('tomato').reset()<CR>", opts)
+
+-- comment
+map('n', '<leader>nf', ":lua require('neogen').generate()<CR>", opts)

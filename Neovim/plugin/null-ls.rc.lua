@@ -50,3 +50,16 @@ vim.api.nvim_create_user_command(
   end,
   { nargs = 0 }
 )
+
+
+local hurl_formatter = {
+  name = "hurl_formatter",
+  method = null_ls.methods.FORMATTING,
+  filetypes = { "hurl" },
+  generator = null_ls.formatter({
+    command = "hurlfmt",
+    to_stdin = true,
+    from_stderr = true,
+  }),
+}
+null_ls.register(hurl_formatter)

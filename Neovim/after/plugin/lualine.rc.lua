@@ -15,6 +15,7 @@ lualine.setup {
     lualine_b = { "branch", "diff", "diagnostics" },
     lualine_c = {
       { "filename" },
+      require("tomato").message,
     },
     lualine_x = { "encoding", "fileformat", "filetype" },
     lualine_y = { "progress" },

@@ -61,6 +61,10 @@ vim.api.nvim_create_autocmd("InsertLeave", {
   command = "set nopaste"
 })
 
+vim.diagnostic.config({
+  virtual_text = false
+})
+
 local which_os = require('util/which_os')
 if which_os.is_win() then
   vim.o.shell = "pwsh.exe"

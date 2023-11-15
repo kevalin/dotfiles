@@ -9,6 +9,6 @@ tree.setup {
     relativenumber = true,
   },
   filters = {
-    custom = { ".git", "node_modules" },
+    custom = { ".git", "node_modules", "dist" },
   },
 }

@@ -52,20 +52,7 @@ function M.setup()
     use 'williamboman/mason.nvim'
     use 'williamboman/mason-lspconfig.nvim'
 
-    -- LSP UIs
-    use {
-      'glepnir/lspsaga.nvim',
-      opt = true,
-      branch = "main",
-      event = "LspAttach",
-      config = function()
-        require("lspsaga").setup({})
-      end,
-      requires = {
-        { "nvim-tree/nvim-web-devicons" },
-        { "nvim-treesitter/nvim-treesitter" }
-      }
-    }
+    use 'glepnir/lspsaga.nvim' -- LSP UIs
     use 'L3MON4D3/LuaSnip'
     use {
       'nvim-treesitter/nvim-treesitter',
@@ -108,6 +95,23 @@ function M.setup()
     }
 
     use { 'Vonr/align.nvim' }
+
+    -- use { 'rcarriga/nvim-notify' }
+
+    use { 'Kevalin/tomato-timer.nvim', requires = 'rcarriga/nvim-notify' }
+
+    use {
+      "danymat/neogen",
+      config = function()
+        require('neogen').setup {
+          enabled = true,
+          input_after_comment = true,
+        }
+      end,
+      requires = "nvim-treesitter/nvim-treesitter",
+      -- Uncomment next line if you want to follow only stable versions
+      -- tag = "*"
+    }
 
     -- Bootstrap Neovim
     if packer_bootstrap then

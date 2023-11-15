@@ -31,10 +31,10 @@ local on_attach = function(client, bufnr)
   local opts = { noremap = true, silent = true }
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  -- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   -- buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  -- buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
 end
 
 protocol.CompletionItemKind = {
@@ -80,7 +80,7 @@ if which_os.is_win() then
 end
 nvim_lsp.tsserver.setup {
   on_attach = on_attach,
-  filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
+  filetypes = { "javascript", "typescript", "typescriptreact", "typescript.tsx" },
   cmd = { tsserver_cmd, "--stdio" },
   capabilities = capabilities
 }
@@ -141,26 +141,6 @@ nvim_lsp.gopls.setup {
   },
   on_attach = function(client, bufnr)
     on_attach(client, bufnr)
-    -- enable_format_on_save(client, bufnr)
-
-    --[[ vim.api.nvim_create_autocmd("BufWritePre", {
-      pattern = { "*.go" },
-      callback = function()
-        local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding())
-        params.context = { only = { "source.organizeImports" } }
-
-        local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
-        for _, res in pairs(result or {}) do
-          for _, r in pairs(res.result or {}) do
-            if r.edit then
-              vim.lsp.util.apply_workspace_edit(r.edit, vim.lsp.util._get_offset_encoding())
-            else
-              vim.lsp.buf.execute_command(r.command)
-            end
-          end
-        end
-      end,
-    }) ]]
   end
 }
 
@@ -174,7 +154,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 )
 
 -- Diagnostic symbols in the sign column (gutter)
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+local signs = { Error = "", Warn = "", Hint = "", Info = "" }
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })

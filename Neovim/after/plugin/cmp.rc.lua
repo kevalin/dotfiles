@@ -19,8 +19,10 @@ cmp.setup({
     }),
   }),
   sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-    { name = 'buffer' },
+    { name = 'nvim_lsp', keyword_length = 1 },
+    { name = 'buffer', keyword_length = 3 },
+    { name = 'luasnip', keyword_length = 2 },
+    { name = 'path' },
   }),
   formatting = {
     format = lspkind.cmp_format({ with_text = false, maxwidth = 50 })
@@ -31,5 +33,3 @@ vim.cmd [[
   set completeopt=menuone,noinsert,noselect
   highlight! default link CmpItemKind CmpItemMenuDefault
 ]]
-
-
