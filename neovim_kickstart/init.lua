@@ -767,6 +767,9 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'hrsh7th/cmp-buffer',
+      'ray-x/cmp-sql',
+      'crispgm/cmp-beancount',
     },
     config = function()
       -- See `:help cmp`
@@ -854,6 +857,10 @@ require('lazy').setup({
           { name = 'buffer', keyword_length = 3 },
           { name = 'luasnip', keyword_length = 2 },
           { name = 'path' },
+          { name = 'sql' },
+          { name = 'beancount', option = {
+            account = '/path/to/account.bean',
+          } },
         },
       }
     end,
@@ -965,18 +972,18 @@ require('lazy').setup({
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
-  require 'kickstart.plugins.lualine',
-  require 'kickstart.plugins.dashboard',
-  require 'kickstart.plugins.trouble',
-  -- require 'kickstart.plugins.lspsaga',
-  require 'kickstart.plugins.lspkind',
+  -- require 'kickstart.plugins.lualine',
+  -- require 'kickstart.plugins.dashboard',
+  -- require 'kickstart.plugins.trouble',
+  -- require 'kickstart.plugins.lspkind',
   -- require 'kickstart.plugins.neogit',
+
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
