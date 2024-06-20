@@ -5,6 +5,9 @@ return {
       hover = {
         max_height = 0.5,
       },
+      light_bulb = {
+        enable = false,
+      },
     }
   end,
   dependencies = {

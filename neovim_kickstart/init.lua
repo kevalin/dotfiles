@@ -225,6 +225,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
+  desc = 'Highlight *.hurl files',
+  pattern = { '*.hurl' },
+  command = 'set filetype=hurl',
+})
+
 vim.diagnostic.config {
   virtual_text = false,
   signs = true,
@@ -414,6 +420,8 @@ require('lazy').setup({
           },
         },
       }
+
+      vim.treesitter.language.register('hurl', '.hurl')
 
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
