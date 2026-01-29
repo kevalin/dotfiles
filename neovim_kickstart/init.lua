@@ -209,6 +209,7 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 vim.keymap.set('n', '<C-a>', 'gg<S-v>G', { desc = 'Select all' })
+vim.keymap.set('n', 'tw', 'ciw', { desc = 'Delete a word' })
 vim.keymap.set('n', 'dw', 'vb"_d', { desc = 'Delete a word backwards' })
 vim.keymap.set('n', 'sw', 'viw', { desc = 'Select a word' })
 
@@ -246,27 +247,7 @@ vim.diagnostic.config {
   severity_sort = true,
 }
 
-local signs = { Error = '󰅚 ', Warn = '󰀪 ', Hint = '󰌶 ', Info = ' ' }
-for type, icon in pairs(signs) do
-  local hl = 'DiagnosticSign' .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
-vim.api.nvim_create_autocmd('CursorHold', {
-  callback = function()
-    local opts = {
-      focusable = false,
-      close_events = { 'BufLeave', 'CursorMoved', 'InsertEnter', 'FocusLost' },
-      border = 'rounded',
-      source = 'always',
-      prefix = ' ',
-      scope = 'cursor',
-    }
-    vim.diagnostic.open_float(nil, opts)
-  end,
-})
-
--- [[ Install `lazy.nvim` plugin manager ]]
+ -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -305,7 +286,28 @@ require('lazy').setup({
     'numToStr/Comment.nvim',
     config = function()
       require('Comment').setup {
+        padding = true,
+        sticky = true,
+        ignore = nil,
+        toggler = {
+          line = 'gcc',
+          block = 'gbc',
+        },
+        opleader = {
+          line = 'gc',
+          block = 'gb',
+        },
+        extra = {
+          above = 'gc0',
+          below = 'gco',
+          eol = 'gcA',
+        },
+        mappings = {
+          basic = true,
+          extra = true,
+        },
         pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+        post_hook = nil,
       }
 
       local ft = require 'Comment.ft'
@@ -317,19 +319,7 @@ require('lazy').setup({
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
   --    require('gitsigns').setup({ ... })
   --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-  },
+
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -494,9 +484,10 @@ require('lazy').setup({
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
       -- Automatically install LSPs and related tools to stdpath for Neovim
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
-      'williamboman/mason-lspconfig.nvim',
+      { 'mason-org/mason.nvim', opts = {} }, -- NOTE: Must be loaded before dependants
+      'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
@@ -505,7 +496,7 @@ require('lazy').setup({
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim', opts = {} },
+      { 'folke/neodev.nvim', opts = { library = { enabled = true, types = true } } },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -571,7 +562,7 @@ require('lazy').setup({
           map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
-          --  Similar to document symbols, except searches over your entire project.
+          --  Similar to document symbols, except searches over your entire project.init
           map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
           -- Rename the variable under your cursor.
@@ -628,6 +619,8 @@ require('lazy').setup({
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
             end, '[T]oggle Inlay [H]ints')
           end
+
+          vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'single' })
         end,
       })
 
@@ -658,7 +651,13 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
+        ts_ls = {
+          init_options = {
+            preferences = {
+              disableSuggestions = true,
+            },
+          },
+        },
         --
 
         lua_ls = {
@@ -670,11 +669,25 @@ require('lazy').setup({
               completion = {
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = {
+                disable = { 'missing-fields' },
+              },
+              workspace = {
+                checkThirdParty = false,
+              },
             },
           },
         },
+
+        jdtls = {
+          settings = {
+            java = {
+              home = vim.env.JAVA_HOME or '/Users/linli/.sdkman/candidates/java/23.0.1-open',
+            },
+          },
+        },
+
+        sqlls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -699,7 +712,6 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'prettier',
-
         'eslint_d',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -707,12 +719,13 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         handlers = {
           function(server_name)
+            local lspconfig = require 'lspconfig'
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for tsserver)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            lspconfig[server_name].setup(server)
           end,
         },
       }
@@ -721,15 +734,15 @@ require('lazy').setup({
 
   { -- Autoformat
     'stevearc/conform.nvim',
-    lazy = false,
+    event = 'BufWritePre',
     keys = {
       {
         '<leader>f',
         function()
           require('conform').format { async = true, lsp_fallback = true }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
+         end,
+         mode = 'n',
+         desc = '[F]ormat buffer',
       },
     },
     opts = {
@@ -751,26 +764,26 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        javascript = { 'prettier' },
-        typescript = { 'prettier' },
-        javascriptreact = { 'prettier' },
-        typescriptreact = { 'prettier' },
-        svelte = { 'prettier' },
-        css = { 'prettier' },
-        html = { 'prettier' },
-        json = { 'prettier' },
-        yaml = { 'prettier' },
-        markdown = { 'prettier' },
-        graphql = { 'prettier' },
+        javascript = { 'prettierd' },
+        typescript = { 'prettierd' },
+        javascriptreact = { 'prettierd' },
+        typescriptreact = { 'prettierd' },
+        svelte = { 'prettierd' },
+        css = { 'prettierd' },
+        html = { 'prettierd' },
+        json = { 'prettierd' },
+        yaml = { 'prettierd' },
+        markdown = { 'prettierd' },
+        graphql = { 'prettierd' },
         hurl = { 'hurlfmt' },
+        sql = { 'sql_formatter' },
+        jsonc = { 'prettierd' },
+        -- groovy = { 'npm-groovy-lint' },
       },
       formatters = {
-        hurlfmt = function(bufnr)
-          return {
-            command = require('conform.util').find_executable({ '/opt/homebrew/bin/hurlfmt' }, 'hurlfmt'),
-            prepend_args = { '--in-place' },
-          }
-        end,
+        sql_formatter = {
+          append_args = { '-c', '{"language":"mysql","tabWidth":2,"keywordCase":"upper","linesBetweenQueries":2}' },
+        },
       },
     },
   },
@@ -947,31 +960,13 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      -- local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      -- statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      -- statusline.section_location = function()
-      --   return '%2l:%-2v'
-      -- end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'hurl' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {

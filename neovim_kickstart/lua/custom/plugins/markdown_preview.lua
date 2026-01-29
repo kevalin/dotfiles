@@ -9,15 +9,16 @@ return {
   build = function()
     vim.fn['mkdp#util#install']()
   end,
-  config = function()
-    vim.g.mkdp_theme = 'light'
-  end,
-  keys = {
-    {
-      '<leader>mp',
-      ft = 'markdown',
-      '<cmd>MarkdownPreviewToggle<cr>',
-      desc = 'Markdown Preview',
-    },
-  },
+  -- config = function()
+  --   vim.g.mkdp_theme = 'light'
+  --   vim.g.mkdp_browser = 'Chromium'
+  -- end,
+  -- keys = {
+  --   {
+  --     '<leader>mp',
+  --     ft = 'markdown',
+  --     '<cmd>MarkdownPreviewToggle<cr>',
+  --     desc = 'Markdown Preview',
+  --   },
+  -- },
 }

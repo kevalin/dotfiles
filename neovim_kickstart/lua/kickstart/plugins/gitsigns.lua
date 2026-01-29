@@ -18,7 +18,7 @@ return {
         -- Navigation
         map('n', ']c', function()
           if vim.wo.diff then
-            vim.cmd.normal { ']c', bang = true }
+            vim.api.nvim_feedkeys(']c', 'n', true)
           else
             gitsigns.nav_hunk 'next'
           end
@@ -26,7 +26,7 @@ return {
 
         map('n', '[c', function()
           if vim.wo.diff then
-            vim.cmd.normal { '[c', bang = true }
+            vim.api.nvim_feedkeys('[c', 'n', true)
           else
             gitsigns.nav_hunk 'prev'
           end
