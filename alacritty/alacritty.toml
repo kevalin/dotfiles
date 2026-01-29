@@ -1,36 +1,28 @@
 [env]
 TERM = "xterm-256color"
 
+[terminal.shell]
+program = "/opt/homebrew/bin/fish"
+# program = "/bin/zsh"
+args = ["--login"]
+
 [font]
 size = 13
-
-[font.bold]
 # family = "JetBrainsMono Nerd Font Mono"
 # family = "Hack Nerd Font Mono"
-family = "BlexMono Nerd Font Mono"
-style = "Bold"
+# family = "BlexMono Nerd Font Mono"
+# family = "IosevkaTerm Nerd Font Mono"
+# family = "CaskaydiaMono Nerd Font"
+normal = { family = "IosevkaTerm Nerd Font Mono", style = "Regular" }
+bold = { family = "IosevkaTerm Nerd Font Mono", style = "Bold" }
+italic = { family = "IosevkaTerm Nerd Font Mono", style = "Italic" }
+bold_italic = { family = "IosevkaTerm Nerd Font Mono", style = "Bold Italic" }
+# normal = { family = "BlexMono Nerd Font Mono", style = "Regular" }
+# bold = { family = "BlexMono Nerd Font Mono", style = "Bold" }
+# italic = { family = "BlexMono Nerd Font Mono", style = "Italic" }
+# bold_italic = { family = "BlexMono Nerd Font Mono", style = "Bold Italic" }
 
-[font.bold_italic]
-# family = "JetBrainsMono Nerd Font Mono"
-# family = "Hack Nerd Font Mono"
-family = "BlexMono Nerd Font Mono"
-style = "Bold Italic"
-
-[font.italic]
-# family = "JetBrainsMono Nerd Font Mono"
-# family = "Hack Nerd Font Mono"
-family = "BlexMono Nerd Font Mono"
-style = "Italic"
-
-[font.normal]
-# family = "JetBrainsMono Nerd Font Mono"
-# family = "Hack Nerd Font Mono"
-family = "BlexMono Nerd Font Mono"
-style = "Regular"
-
-[font.offset]
-x = 0
-y = 0
+offset = { x = 0, y = 0 }
 
 [[mouse.bindings]]
 action = "PasteSelection"
@@ -43,8 +35,10 @@ history = 100000
 save_to_clipboard = true
 
 [window]
-opacity = 0.95
+opacity = 0.85
 blur = true
+# decorations = "None"
+# startup_mode = "Maximized"
 
 [window.padding]
 x = 0
@@ -90,4 +84,3 @@ color = '#ff9e64'
 [[colors.indexed_colors]]
 index = 17
 color = '#db4b4b'
-
